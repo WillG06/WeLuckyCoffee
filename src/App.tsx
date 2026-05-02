@@ -11,14 +11,17 @@ import Visit from "./pages/Visit.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import ScrollToTop from "./components/ScrollToTop";
 
+
 const queryClient = new QueryClient();
+
+const basename = import.meta.env.DEV ? "/" : "/WeLuckyCoffee/";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={basename}>
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
