@@ -15,12 +15,12 @@ import gallery5 from "@/assets/gallery-5.jpg";
 import pearlsMacro from "@/assets/pearls-macro.jpg";
 import beans from "@/assets/beans.jpg";
 import coconutLatte from "@/assets/menu-coconut-latte.png";
+import heroVideo from "@/assets/hero-video.mp4";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const Home = () => {
   // ─── Hero mouse parallax ────────────────────────────────────────
-  // All motion values and springs are defined at the top level (no hooks in JSX).
   const mvX = useMotionValue(0);
   const mvY = useMotionValue(0);
 
@@ -73,10 +73,6 @@ const Home = () => {
   );
 
   // ─── Shared section card styles ─────────────────────────────────
-  // FIX: Sections use normal document flow — no framer-motion y transforms on wrappers,
-  // no large negative margins that were hiding content. Only a small -mt-8 is used
-  // purely for the visual "card peels over" rounded-top effect.
-  // z-index escalates with each card so later sections paint over earlier ones.
   const cardBase =
     "-mt-8 rounded-t-[2rem] md:rounded-t-[3rem] will-change-transform";
 
@@ -112,6 +108,35 @@ const Home = () => {
             backgroundSize: "80px 80px",
           }}
         />
+
+        {/* ── Right-half video background — behind all hero content ──
+            Hidden on mobile (grid stacks, no meaningful "right side").
+            Gradient mask dissolves left edge into linen — no hard cut.    ── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2.8, ease, delay: 0.2 }}
+          className="absolute right-0 inset-y-0 hidden lg:block pointer-events-none overflow-hidden z-[2]"
+          style={{ width: "50%" }}
+        >
+          <video
+            src={heroVideo}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full"
+            style={{
+              objectFit: "cover",
+              objectPosition: "center",
+              opacity: 0.3,
+              mixBlendMode: "multiply",
+              maskImage: "linear-gradient(to right, transparent 0%, transparent 15%, rgba(0,0,0,0.7) 55%, black 100%)",
+              WebkitMaskImage: "linear-gradient(to right, transparent 0%, transparent 15%, rgba(0,0,0,0.7) 55%, black 100%)",
+            }}
+          />
+        </motion.div>
 
         {/* Main split grid */}
         <div className="relative z-10 container min-h-[100svh] grid grid-cols-1 lg:grid-cols-[54%_46%] items-center">
@@ -286,7 +311,7 @@ const Home = () => {
               ))}
             </motion.div>
 
-            {/* Layer 4 — main drink with 3D tilt */}
+            {/* Layer 4 — main drink with 3D tilt (fallback beneath video) */}
             <motion.div
               style={{ x: drinkX, y: drinkY, perspective: 1400 }}
               initial={{ opacity: 0, y: 60, scale: 0.88 }}
@@ -386,8 +411,6 @@ const Home = () => {
 
       {/* ═══════════════════════════════════════════════════════════
           EDITORIAL STORY — card layer 2
-          FIX: No framer-motion y transform. Only -mt-8 for the
-          visual rounded-top overlap. Content is fully visible.
       ═══════════════════════════════════════════════════════════ */}
       <section
         className={`relative py-32 md:py-44 bg-vanilla overflow-hidden z-20 shadow-[0_-20px_50px_-16px_rgba(0,0,0,0.18)] ${cardBase}`}
